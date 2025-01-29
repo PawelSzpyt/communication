@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faktura</title>
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+    @page {
+        margin-left: 9mm;
+        margin-right: 12mm;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #000;
+        font-size: 13px;
+        height: 100%;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        height: 100%;
+    }
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        display: block;
+        width: 800px;
+        min-height: auto;
+        margin: auto;
+    }
+
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 0;
+    }
+
+    .header-text {
+        text-align: right;
+    }
+
+    .header-text h2,
+    .header-text h3 {
+        margin: 0;
+        text-align: right;
+        font-size: 15px;
+    }
+
+    .section {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .column {
+        width: 48%;
+    }
+
+    .highlight-box-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        gap: 1%;
+    }
+
+    .highlight-box {
+        background-color: #7dc7ff;
+        color: #fff;
+        padding: 8px;
+        font-size: 14px;
+        flex: 1;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .full-width-box {
+        background-color: #7dc7ff;
+        color: #fff;
+        padding: 8px;
+        font-size: 14px;
+        text-align: left;
+        width: 100%;
+        border-radius: 0;
+        font-weight: bold;
+    }
+
+    .info-box {
+        display: flex;
+        padding: 0px;
+        margin-bottom: 5px;
+        width: 100%;
+        gap: 1%;
+    }
+
+    .column-small {
+        flex: 0 0 26%;
+        margin: 8px 0;
+        padding: 0;
+    }
+
+    .border_small {
+        border: 2px solid #0078d7;
+        padding: 8px;
+        margin: 8px 0;
+        text-align: justify;
+        flex: 0 0 27%;
+    }
+
+    .border_small p, .border_small div {
+        margin: 0 0 8px;
+    }
+
+    .border_big {
+        border: 2px solid #0078d7;
+        padding: 8px;
+        margin: 8px 0;
+        flex: 0 0 45%;
+    }
+
+    .border img {
+        width: 20px;
+        height: auto;
+    }
+
+    .contact img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .comparison {
+        display: flex;
+    }
+
+    .comparison img {
+        width: auto;
+        height: 24px;
+        margin: 2px 25px 4px 2px;
+    }
+
+    .comparison div {
+        display: flex;
+        width: 100%;
+    }
+
+    .comparison-text {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        font-size: 12px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+    table th,
+    table td {
+        padding: 4px;
+        text-align: right;
+    }
+
+    table tbody tr:nth-child(even) {
+        background-color: #f1f9ff;
+    }
+
+    table td:first-child {
+        text-align: left;
+    }
+
+    .graph {
+        text-align: center;
+        margin: 0;
+    }
+
+    .qr-code {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        color: white;
+    }
+
+    .qr-code p {
+        margin: 0;
+        text-align: left;
+        color: white;
+        width: 90px;
+    }
+
+    .qr-code img {
+        max-width: 70px;
+    }
+
+    .page-bottom {
+        position: relative;
+        margin-top: 20px;
+        height: 300px;
+    }
+
+    .blue-background {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #7dc7ff;
+        z-index: -1;
+    }
+
+
+@media print {
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Ensure full width */
+    max-width: 800px; /* Keep it from being too wide */
+}
+
+.page-bottom {
+    flex-grow: 1;
+}
+}
+}
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <header>
+    <img src="img/logo.png" alt="Green Energy Logo">
+    <div class="header-text">
+      <h2>Faktura VAT nr aa6280352 z dnia 29.10.2013</h2>
+      <h3><strong>ORYGINAŁ</strong></h3>
+    </div>
+  </header>
+
+  <div class="section">
+    <div class="column">
+      <p><strong>Sprzedawca:</strong><br> Energia - Odnawialna<br> Topolowa 10<br> 05-300 Mińsk Mazowiecki</p>
+    </div>
+    <div class="column">
+      <p><strong>Nabywca:</strong><br> Wspólnota Mieszkaniowa Jasność<br> Siennicka 352<br> 02-300 Warszawa</p>
+    </div>
+  </div>
+
+  <div class="highlight-box-container">
+    <div class="column-small">
+      <p><strong>+48 25 123 45 67 (24 h/7 dni)<br> info@energia.pl<br> e-bok.energia.pl</strong></p>
+    </div>
+    <div class="highlight-box">
+      <p><strong>Bieżąca należność: 123,34 zł płatna do 03.11.2014</strong></p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="column-small contact">
+      <img src="img/contact.png" alt="Contact Person">
+    </div>
+    <div class="border_big">
+      <p><strong>Numer klienta:</strong> 4990</p>
+      <p><strong>Nazwa klienta:</strong> Wspólnota Mieszkaniowa Jasność</p>
+      <p><strong>Punkt odbioru:</strong> Warszawa, Siennicka 352</p>
+      <p><strong>Produkt:</strong> Jodła (3)</p>
+    </div>
+    <div class="border_small">
+      <p><strong>Porównanie z poprzednim okresem:</strong></p>
+      <div class="comparison">
+        <img src="img/arrowDown.png" alt="Arrow Down">
+        <div class="comparison-text">
+          <strong>Opłata za energię</strong>54 zł niższa
+        </div>
+      </div>
+      <div class="comparison">
+        <img src="img/arrowUp.png" alt="Arrow Up">
+        <div class="comparison-text">
+          <strong>Zużycie energii</strong>23% wyższe
+        </div>
+      </div>
+      <div class="comparison">
+        <img src="img/arrowUp.png" alt="Arrow Up">
+        <div class="comparison-text">
+          <strong>Długość okresu</strong>4% dłuższy
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-width-box">
+    <p>Rozliczenie sprzedaży energii elektrycznej za okres od 3 listopada 2013 do 3 listopada 2014</p>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th></th>
+      <th>Netto [zł]</th>
+      <th>Stawka VAT [%]</th>
+      <th>Podatek VAT [zł]</th>
+      <th>Brutto [zł]</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>Sprzedaż energii elektrycznej</td>
+      <td>12</td>
+      <td>23</td>
+      <td>2,76</td>
+      <td>14,76</td>
+    </tr>
+    <tr>
+      <td>Dystrybucja energii elektrycznej</td>
+      <td>12</td>
+      <td>23</td>
+      <td>2,76</td>
+      <td>14,76</td>
+    </tr>
+    <tr>
+      <td><strong>Razem</strong></td>
+      <td><strong>24</strong></td>
+      <td><strong>23</strong></td>
+      <td><strong>5,52</strong></td>
+      <td><strong>29,52</strong></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p>Bank PKO BP, numer konta: 10 1234 5678 1234 5678 1234 5678</p>
+  <p>Płatność zostanie zrealizowana w drodze polecenia zapłaty.</p><br />
+  <div class="full-width-box">
+    <p>Wykres zużycia energii elektrycznej dla ostatnich 12 miesięcy</p>
+  </div>
+  <div class="graph">
+    <img src="img/graph.PNG" alt="Energy Consumption Graph">
+  </div>
+
+  <div class="page-bottom">
+    <div class="blue-background"></div>
+    <div class="qr-code">
+      <img src="img/code.png" alt="QR Code">
+      <p><strong>Mobilny dostęp do Twojego konta</strong></p>
+    </div>
+  </div>
+</div>
+</body>
+
+</html>
