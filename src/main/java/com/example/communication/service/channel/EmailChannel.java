@@ -53,7 +53,7 @@ public class EmailChannel implements CommunicationChannel {
 
             // Create the email message
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailConfig.getUser()));
+            message.setFrom(new InternetAddress(emailConfig.getFrom()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             message.setSubject(subject);
             message.setText(body);
@@ -64,5 +64,10 @@ public class EmailChannel implements CommunicationChannel {
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email", e);
         }
+    }
+
+    @Override
+    public String getName() {
+        return "email";
     }
 }

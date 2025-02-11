@@ -2,6 +2,7 @@ package com.example.communication.service;
 
 import com.example.communication.dao.CommunicationDAO;
 import com.example.communication.model.Communication;
+import com.example.communication.model.CommunicationStatus;
 
 import javax.ejb.Singleton;
 import javax.inject.Inject;
@@ -40,8 +41,8 @@ public class CommunicationService {
         processingService.processUnprocessedCommunications();
     }
 
-    public void deliverCommunication(Long id) {
-        processingService.deliverSingleCommunication(dao.findById(id));
+    public CommunicationStatus deliverCommunication(Long id) {
+        return processingService.deliverSingleCommunication(dao.findById(id));
     }
 
     public void batchDeliverCommunications() {

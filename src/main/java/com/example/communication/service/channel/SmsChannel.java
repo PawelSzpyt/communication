@@ -1,7 +1,9 @@
 package com.example.communication.service.channel;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.ThreadLocalRandom;
 
+@ApplicationScoped
 public class SmsChannel implements CommunicationChannel {
 
     @Override
@@ -14,5 +16,10 @@ public class SmsChannel implements CommunicationChannel {
         } catch (InterruptedException e) {
             System.err.println("SMS sending interrupted.");
         }
+    }
+
+    @Override
+    public String getName() {
+        return "sms";
     }
 }

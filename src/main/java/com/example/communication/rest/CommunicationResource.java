@@ -1,6 +1,7 @@
 package com.example.communication.rest;
 
 import com.example.communication.model.Communication;
+import com.example.communication.model.CommunicationStatus;
 import com.example.communication.service.CommunicationService;
 import com.example.communication.validation.CommunicationValidator;
 
@@ -98,8 +99,8 @@ public class CommunicationResource {
             return Response.status(Response.Status.NOT_FOUND).entity("Communication not found for ID: " + id).build();
         }
         try {
-            service.deliverCommunication(id);
-            return Response.ok("Communication delivered successfully").build();
+            CommunicationStatus status = service.deliverCommunication(id);
+            return Response.ok(String.format("Communication status: %s" + status.name())).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error delivering communication: " + e.getMessage()).build();
         }

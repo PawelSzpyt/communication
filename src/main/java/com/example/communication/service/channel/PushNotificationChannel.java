@@ -1,8 +1,10 @@
 package com.example.communication.service.channel;
 
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.ThreadLocalRandom;
 
+@ApplicationScoped
 public class PushNotificationChannel implements CommunicationChannel {
 
     @Override
@@ -15,5 +17,10 @@ public class PushNotificationChannel implements CommunicationChannel {
         } catch (InterruptedException e) {
             System.err.println("Push notification sending interrupted.");
         }
+    }
+
+    @Override
+    public String getName() {
+        return "push";
     }
 }

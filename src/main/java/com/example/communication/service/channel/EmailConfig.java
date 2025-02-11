@@ -1,6 +1,11 @@
 package com.example.communication.service.channel;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 
 @ApplicationScoped
 public class EmailConfig {
@@ -9,15 +14,31 @@ public class EmailConfig {
     private String port;
     private String user;
     private String password;
+    private String from;
     private boolean startTls;
 
-    public EmailConfig() {
-        // Load configuration from environment variables or application.properties
-        this.host = System.getenv().getOrDefault("SMTP_HOST", "smtp.example.com");
-        this.port = System.getenv().getOrDefault("SMTP_PORT", "587");
-        this.user = System.getenv().getOrDefault("SMTP_USER", "your-email@example.com");
-        this.password = System.getenv().getOrDefault("SMTP_PASSWORD", "your-password");
-        this.startTls = Boolean.parseBoolean(System.getenv().getOrDefault("SMTP_STARTTLS", "true"));
+    @PostConstruct
+    public void init() {
+        try (InputStream input = getClass().getClassLoader()
+                .getResourceAsStream("application.properties")) {
+
+            if (input == null) {
+                throw new RuntimeException("application.properties not found!");
+            }
+            Properties prop = new Properties();
+            prop.load(input);
+
+            this.host = prop.getProperty("SMTP_HOST", "smtp.example.com");
+            this.port = prop.getProperty("SMTP_PORT", "587");
+            this.user = prop.getProperty("SMTP_USER", "user");
+            this.from = prop.getProperty("SMTP_FROM", "your-email@example.com");
+            this.password = prop.getProperty("SMTP_PASSWORD", "your-password");
+            this.startTls = Boolean.parseBoolean(prop.getProperty("SMTP_STARTTLS", "true"));
+
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load properties", e);
+        }
     }
 
     public String getHost() {
@@ -34,6 +55,10 @@ public class EmailConfig {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getFrom() {
+        return from;
     }
 
     public boolean isStartTls() {

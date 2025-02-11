@@ -1,7 +1,9 @@
 package com.example.communication.service.channel;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.ThreadLocalRandom;
 
+@ApplicationScoped
 public class WhatsAppChannel implements CommunicationChannel {
 
     @Override
@@ -14,5 +16,10 @@ public class WhatsAppChannel implements CommunicationChannel {
         } catch (InterruptedException e) {
             System.err.println("WhatsApp message sending interrupted.");
         }
+    }
+
+    @Override
+    public String getName() {
+        return "whatsapp";
     }
 }

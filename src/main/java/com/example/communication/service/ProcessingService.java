@@ -3,17 +3,14 @@ package com.example.communication.service;
 import com.example.communication.dao.CommunicationDAO;
 import com.example.communication.model.Communication;
 import com.example.communication.model.CommunicationStatus;
-import com.example.communication.service.channel.*;
+import com.example.communication.service.channel.CommunicationChannel;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +22,9 @@ public class ProcessingService {
     @Inject
     private CommunicationDAO dao;
 
-    private final Random random = new Random();
+    @Inject
+    private Map<String, CommunicationChannel> communicationChannels;
+
     private int intervalSeconds;
 
     @PostConstruct
@@ -47,33 +46,27 @@ public class ProcessingService {
         }, 0, intervalSeconds * 1000L);
     }
 
-    private CommunicationChannel getChannel(String type) {
-        return switch (type) {
-            case "email" -> new EmailChannel();
-            case "sms" -> new SmsChannel();
-            case "push" -> new PushNotificationChannel();
-            case "whatsapp" -> new WhatsAppChannel();
-            default -> throw new IllegalArgumentException("Unsupported communication type: " + type);
-        };
-    }
-
     public void processUnprocessedCommunications() {
         List<Communication> unprocessed = dao.findAll().stream()
                 .filter(c -> c.getStatus() == CommunicationStatus.LOADED)
                 .toList();
 
         for (Communication communication : unprocessed) {
-            String[] types = {"email", "sms", "push", "whatsapp"};
-            communication.setType(types[random.nextInt(types.length)]);
-            communication.setStatus(CommunicationStatus.PROCESSED);
-            dao.update(communication);
+            if (communicationChannels.containsKey(communication.getType())) {
+                communication.setStatus(CommunicationStatus.PROCESSED);
+                dao.update(communication);
+            } else {
+                System.err.println("Unsupported communication type: " + communication.getType());
+                communication.setStatus(CommunicationStatus.ERROR);
+                dao.update(communication);
+            }
         }
     }
 
     @Transactional
-    public void deliverSingleCommunication(Communication communication) {
+    public CommunicationStatus deliverSingleCommunication(Communication communication) {
         try {
-            CommunicationChannel channel = getChannel(communication.getType());
+            CommunicationChannel channel = communicationChannels.get(communication.getType());
             channel.send(communication.getBody(), communication.getDeliverySettings());
             communication.setStatus(CommunicationStatus.SENT);
         } catch (Exception e) {
@@ -83,6 +76,7 @@ public class ProcessingService {
         } finally {
             dao.update(communication);
         }
+        return communication.getStatus();
     }
 
     public void deliverAllCommunications() {
